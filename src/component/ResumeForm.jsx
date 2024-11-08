@@ -5,7 +5,8 @@ function ResumeForm() {
   const [formData, setFormData] = useState({
     name: '',
     education: '',
-    experience: ''
+    experience: '',
+    image: null // Add image to form data
   });
 
   const navigate = useNavigate();
@@ -15,9 +16,19 @@ function ResumeForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const queryParams = new URLSearchParams(formData).toString();
     navigate(`/resume?${queryParams}`);
   };
@@ -57,6 +68,10 @@ function ResumeForm() {
             placeholder="Enter your experience"
             required
           ></textarea>
+        </div>
+        <div>
+          <label>Upload Profile Picture:</label>
+          <input type="file" accept="image/*" onChange={handleImageChange} />
         </div>
         <button type="submit">Generate Resume</button>
       </form>
